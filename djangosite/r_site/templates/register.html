@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 350px; margin: 40px auto; text-align: center;">
+    <div style="background: white; border: 1px solid #dbdbdb; padding: 40px; margin-bottom: 10px;">
+        <h1 style="font-family: 'Arial', sans-serif; font-size: 35px; margin-bottom: 10px;">BR</h1>
+        <p style="color: #8e8e8e; font-weight: bold; font-size: 17px; margin-bottom: 20px;">Dostlarınızın şəkil və videolarını görmək üçün qeydiyyatdan keçin.</p>
+        
+        <form style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="email" placeholder="Mobil nömrə və ya Email" style="padding: 10px; background: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px;">
+            <input type="text" placeholder="Tam Ad" style="padding: 10px; background: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px;">
+            <input type="text" placeholder="İstifadəçi adı" style="padding: 10px; background: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px;">
+            <input type="password" placeholder="Şifrə" style="padding: 10px; background: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px;">
+            <button type="submit" style="background: #0095f6; color: white; border: none; padding: 7px; border-radius: 4px; font-weight: bold; cursor: pointer;">Qeydiyyatdan keç</button>
+        </form>
+    </div>
+
+    <div style="background: white; border: 1px solid #dbdbdb; padding: 20px;">
+        <p style="font-size: 14px;">Hesabın var? <a href="{% url 'Login' %}" style="color: #0095f6; text-decoration: none; font-weight: bold;">Giriş et</a></p>
+    </div>
+</div>
+{% endblock %}

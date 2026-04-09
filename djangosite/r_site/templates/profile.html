@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .profile-container { max-width: 935px; margin: 30px auto; padding: 20px; }
+    
+    /* Üst hissə: Şəkil və Məlumatlar */
+    .profile-header { display: flex; align-items: center; margin-bottom: 44px; border-bottom: 1px solid #dbdbdb; padding-bottom: 40px; }
+    .profile-image-section { flex: 1; text-align: center; position: relative; }
+    .profile-image { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 1px solid #dbdbdb; }
+    .change-photo-btn { display: block; margin-top: 10px; color: #0095f6; font-size: 14px; cursor: pointer; border: none; background: none; font-weight: bold; }
+    
+    .profile-info { flex: 2; padding-left: 20px; }
+    .profile-info h2 { font-size: 28px; font-weight: 300; margin-bottom: 20px; }
+    .info-item { margin-bottom: 10px; font-size: 16px; }
+    .info-item strong { font-weight: 600; width: 100px; display: inline-block; }
+
+    /* Alt hissə: Buttonlar (Tablar) */
+    .profile-tabs { display: flex; justify-content: center; border-top: 1px solid #dbdbdb; gap: 60px; }
+    .tab-btn { background: none; border: none; border-top: 1px solid transparent; color: #8e8e8e; 
+               padding: 15px 0; font-weight: bold; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+    .tab-btn:hover, .tab-btn.active { color: #262626; border-top: 1px solid #262626; }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-image-section">
+            <img src="https://via.placeholder.com/150" alt="Profil Şəkli" class="profile-image">
+            <button class="change-photo-btn">Profil şəklini dəyiş</button>
+        </div>
+
+        <div class="profile-info">
+            <h2>Rahman_User</h2>
+            <div class="info-item"><strong>Ad:</strong> Rahman</div>
+            <div class="info-item"><strong>Nömrə:</strong> +994 50 000 00 00</div>
+            <div class="info-item"><strong>Şifrə:</strong> ********</div>
+            <button style="margin-top: 10px; padding: 5px 15px; border-radius: 4px; border: 1px solid #dbdbdb; background: white; cursor: pointer; font-weight: 600;">Profili Redaktə Et</button>
+        </div>
+    </div>
+
+    <div class="profile-tabs">
+        <button class="tab-btn active">POSTLARIM</button>
+        <button class="tab-btn">KAYD EDİLDİ</button>
+        <button class="tab-btn">LİKE ETDİYİM</button>
+        <button class="tab-btn">YORUMLARIM</button>
+    </div>
+
+    <div style="text-align: center; padding-top: 50px; color: #8e8e8e;">
+        <p>Hələlik heç bir paylaşım yoxdur.</p>
+    </div>
+</div>
+{% endblock %}

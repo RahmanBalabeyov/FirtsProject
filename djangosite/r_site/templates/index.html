@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .feed-container { max-width: 600px; margin: 20px auto; padding-bottom: 50px; }
+    
+    /* Post Kartı */
+    .post-card { background: white; border: 1px solid #dbdbdb; border-radius: 8px; margin-bottom: 24px; }
+    
+    /* Post Başlığı (User) */
+    .post-header { display: flex; align-items: center; padding: 12px 16px; }
+    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #eee; margin-right: 12px; object-fit: cover; }
+    .username { font-weight: 600; font-size: 14px; color: #262626; text-decoration: none; }
+
+    /* Post Şəkli və ya Yazısı */
+    .post-image { width: 100%; display: block; border-top: 1px solid #efefef; border-bottom: 1px solid #efefef; }
+    .post-text-content { padding: 20px; font-size: 16px; background: #fafafa; line-height: 1.5; }
+
+    /* İnteraksiya Düymələri (Like, Save) */
+    .post-actions { display: flex; justify-content: space-between; padding: 12px 16px; }
+    .left-actions { display: flex; gap: 16px; }
+    .action-btn { background: none; border: none; cursor: pointer; padding: 0; font-size: 20px; }
+    .action-btn:hover { opacity: 0.6; }
+
+    /* Şərh və Bəyənmə Sayı */
+    .post-details { padding: 0 16px 12px 16px; font-size: 14px; }
+    .likes-count { font-weight: 600; margin-bottom: 8px; display: block; }
+    .post-caption { margin-bottom: 8px; }
+    .post-caption strong { margin-right: 5px; }
+
+    /* Şərh Yazma Hissəsi */
+    .comment-section { border-top: 1px solid #efefef; padding: 12px 16px; display: flex; align-items: center; }
+    .comment-input { border: none; flex-grow: 1; outline: none; font-size: 14px; background: transparent; }
+    .post-comment-btn { background: none; border: none; color: #0095f6; font-weight: 600; cursor: pointer; font-size: 14px; }
+</style>
+
+<div class="feed-container">
+    
+    <div class="post-card">
+        <div class="post-header">
+            <div class="user-avatar"></div> <a href="#" class="username">rahman_dev</a>
+        </div>
+
+        <div class="post-text-content">
+            Bu gün ilk Django layihəmin ana səhifəsini hazırlayıram! 🚀 #django #python #coding
+        </div>
+
+        <div class="post-actions">
+            <div class="left-actions">
+                <button class="action-btn">❤️</button> <button class="action-btn">💬</button> </div>
+            <button class="action-btn">🔖</button> </div>
+
+        <div class="post-details">
+            <span class="likes-count">42 bəyənmə</span>
+            <div class="post-caption">
+                <strong>rahman_dev</strong> Django dərsləri çox maraqlı keçir.
+            </div>
+        </div>
+
+        <div class="comment-section">
+            <input type="text" class="comment-input" placeholder="Şərh yaz...">
+            <button class="post-comment-btn">Paylaş</button>
+        </div>
+    </div>
+
+    <div class="post-card">
+        <div class="post-header">
+            <div class="user-avatar"></div>
+            <a href="#" class="username">ali_coder</a>
+        </div>
+        
+        <img src="https://via.placeholder.com/600x400" alt="Post Image" class="post-image">
+
+        <div class="post-actions">
+            <div class="left-actions">
+                <button class="action-btn">🤍</button>
+                <button class="action-btn">💬</button>
+            </div>
+            <button class="action-btn">🔖</button>
+        </div>
+
+        <div class="post-details">
+            <span class="likes-count">105 bəyənmə</span>
+            <div class="post-caption">
+                <strong>ali_coder</strong> Manzara çox gözəldir.
+            </div>
+        </div>
+
+        <div class="comment-section">
+            <input type="text" class="comment-input" placeholder="Şərh yaz...">
+            <button class="post-comment-btn">Paylaş</button>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

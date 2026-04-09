@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Instagram Clone</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #fafafa; }
+        .navbar { 
+            background: white; border-bottom: 1px solid #dbdbdb; 
+            padding: 10px 20px; position: fixed; top: 0; width: 100%; 
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 1000;
+        }
+        .navbar a { text-decoration: none; color: black; font-weight: bold; margin: 0 10px; }
+        .content { margin-top: 80px; display: flex; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">BR</div>
+        <div class="links">
+            <a href="{% url 'Home' %}">Home</a>
+            <a href="{% url 'Profile' %}">Profile</a>
+            <a href="{% url 'Login' %}">Login</a>
+            <a href="{% url 'Register' %}">Register</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>
