@@ -2,95 +2,134 @@
 
 {% block content %}
 <style>
-    .feed-container { max-width: 600px; margin: 20px auto; padding-bottom: 50px; }
-    
-    /* Post Kartı */
-    .post-card { background: white; border: 1px solid #dbdbdb; border-radius: 8px; margin-bottom: 24px; }
-    
-    /* Post Başlığı (User) */
-    .post-header { display: flex; align-items: center; padding: 12px 16px; }
-    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #eee; margin-right: 12px; object-fit: cover; }
-    .username { font-weight: 600; font-size: 14px; color: #262626; text-decoration: none; }
-
-    /* Post Şəkli və ya Yazısı */
-    .post-image { width: 100%; display: block; border-top: 1px solid #efefef; border-bottom: 1px solid #efefef; }
-    .post-text-content { padding: 20px; font-size: 16px; background: #fafafa; line-height: 1.5; }
-
-    /* İnteraksiya Düymələri (Like, Save) */
-    .post-actions { display: flex; justify-content: space-between; padding: 12px 16px; }
-    .left-actions { display: flex; gap: 16px; }
-    .action-btn { background: none; border: none; cursor: pointer; padding: 0; font-size: 20px; }
-    .action-btn:hover { opacity: 0.6; }
-
-    /* Şərh və Bəyənmə Sayı */
-    .post-details { padding: 0 16px 12px 16px; font-size: 14px; }
-    .likes-count { font-weight: 600; margin-bottom: 8px; display: block; }
-    .post-caption { margin-bottom: 8px; }
-    .post-caption strong { margin-right: 5px; }
-
-    /* Şərh Yazma Hissəsi */
-    .comment-section { border-top: 1px solid #efefef; padding: 12px 16px; display: flex; align-items: center; }
-    .comment-input { border: none; flex-grow: 1; outline: none; font-size: 14px; background: transparent; }
-    .post-comment-btn { background: none; border: none; color: #0095f6; font-weight: 600; cursor: pointer; font-size: 14px; }
+    .feed { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+    .post {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .post-header {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        gap: 12px;
+    }
+    .avatar {
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b1a, #ffa366);
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-weight: 700; font-size: 14px;
+    }
+    .post-user { font-weight: 600; font-size: 14px; color: #1a1a1a; }
+    .post-time { font-size: 12px; color: #6b7280; }
+    .post-body { padding: 0 20px 16px; font-size: 15px; line-height: 1.6; color: #1a1a1a; }
+    .post-image { width: 100%; display: block; }
+    .post-actions {
+        display: flex;
+        gap: 8px;
+        padding: 12px 20px;
+        border-top: 1px solid #f3f4f6;
+    }
+    .action {
+        background: none;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #6b7280;
+        cursor: pointer;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .action:hover { background: #fff4ec; color: #ff6b1a; }
+    .post-stats { padding: 0 20px 12px; font-size: 13px; color: #6b7280; }
+    .post-stats strong { color: #1a1a1a; }
+    .comment-box {
+        display: flex;
+        padding: 12px 20px;
+        border-top: 1px solid #f3f4f6;
+        gap: 8px;
+    }
+    .comment-box input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 14px;
+        background: transparent;
+    }
+    .comment-box button {
+        background: none;
+        border: none;
+        color: #ff6b1a;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .feed-header {
+        max-width: 600px;
+        margin: 0 auto 24px;
+    }
+    .feed-header h1 {
+        font-size: 24px;
+        margin: 0 0 4px;
+        color: #1a1a1a;
+    }
+    .feed-header p { color: #6b7280; margin: 0; font-size: 14px; }
 </style>
 
-<div class="feed-container">
-    
-    <div class="post-card">
+<div class="feed-header">
+    <h1>Ana səhifə</h1>
+    <p>Ən son paylaşımlar</p>
+</div>
+
+<div class="feed">
+
+    <article class="post">
         <div class="post-header">
-            <div class="user-avatar"></div> <a href="#" class="username">rahman_dev</a>
-        </div>
-
-        <div class="post-text-content">
-            Bu gün ilk Django layihəmin ana səhifəsini hazırlayıram! 🚀 #django #python #coding
-        </div>
-
-        <div class="post-actions">
-            <div class="left-actions">
-                <button class="action-btn">❤️</button> <button class="action-btn">💬</button> </div>
-            <button class="action-btn">🔖</button> </div>
-
-        <div class="post-details">
-            <span class="likes-count">42 bəyənmə</span>
-            <div class="post-caption">
-                <strong>rahman_dev</strong> Django dərsləri çox maraqlı keçir.
+            <div class="avatar">RD</div>
+            <div>
+                <div class="post-user">rahman_dev</div>
+                <div class="post-time">2 saat öncə</div>
             </div>
         </div>
-
-        <div class="comment-section">
-            <input type="text" class="comment-input" placeholder="Şərh yaz...">
-            <button class="post-comment-btn">Paylaş</button>
+        <div class="post-body">
+            Bu gün ilk Django layihəmin ana səhifəsini hazırlayıram. 🚀 #django #python
         </div>
-    </div>
+        <div class="post-stats"><strong>42</strong> bəyənmə · <strong>5</strong> şərh</div>
+        <div class="post-actions">
+            <button class="action">♥ Bəyən</button>
+            <button class="action">💬 Şərh</button>
+            <button class="action">↗ Paylaş</button>
+        </div>
+        <div class="comment-box">
+            <input type="text" placeholder="Şərh yaz...">
+            <button>Göndər</button>
+        </div>
+    </article>
 
-    <div class="post-card">
+    <article class="post">
         <div class="post-header">
-            <div class="user-avatar"></div>
-            <a href="#" class="username">ali_coder</a>
+            <div class="avatar">AC</div>
+            <div>
+                <div class="post-user">ali_coder</div>
+                <div class="post-time">5 saat öncə</div>
+            </div>
         </div>
-        
-        <img src="https://via.placeholder.com/600x400" alt="Post Image" class="post-image">
-
+        <img src="https://via.placeholder.com/600x400/ff6b1a/ffffff?text=BR" alt="Post" class="post-image">
+        <div class="post-body">Manzara çox gözəldir.</div>
+        <div class="post-stats"><strong>105</strong> bəyənmə · <strong>12</strong> şərh</div>
         <div class="post-actions">
-            <div class="left-actions">
-                <button class="action-btn">🤍</button>
-                <button class="action-btn">💬</button>
-            </div>
-            <button class="action-btn">🔖</button>
+            <button class="action">♥ Bəyən</button>
+            <button class="action">💬 Şərh</button>
+            <button class="action">↗ Paylaş</button>
         </div>
-
-        <div class="post-details">
-            <span class="likes-count">105 bəyənmə</span>
-            <div class="post-caption">
-                <strong>ali_coder</strong> Manzara çox gözəldir.
-            </div>
+        <div class="comment-box">
+            <input type="text" placeholder="Şərh yaz...">
+            <button>Göndər</button>
         </div>
-
-        <div class="comment-section">
-            <input type="text" class="comment-input" placeholder="Şərh yaz...">
-            <button class="post-comment-btn">Paylaş</button>
-        </div>
-    </div>
+    </article>
 
 </div>
 {% endblock %}

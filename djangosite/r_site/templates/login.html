@@ -1,23 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width: 350px; margin: 40px auto; text-align: center;">
-    <div style="background: white; border: 1px solid #dbdbdb; padding: 40px; margin-bottom: 10px;">
-        <h1 style="font-family: 'Arial', sans-serif; font-size: 35px; margin-bottom: 30px;">BR</h1>
-        
-        <form style="display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" placeholder="İstifadəçi adı və ya email" style="padding: 10px; background: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px;">
-            <input type="password" placeholder="Şifrə" style="padding: 10px; background: #fafafa; border: 1px solid #dbdbdb; border-radius: 3px;">
-            <button type="submit" style="background: #0095f6; color: white; border: none; padding: 7px; border-radius: 4px; font-weight: bold; cursor: pointer;">Giriş Et</button>
+<div style="max-width: 400px; margin: 40px auto;">
+    <div class="card">
+        <h1 style="text-align: center; color: #ff6b1a; font-size: 32px; margin: 0 0 8px;">BR</h1>
+        <p style="text-align: center; color: #6b7280; font-size: 14px; margin: 0 0 28px;">Hesabınıza daxil olun</p>
+
+        <form style="display: flex; flex-direction: column; gap: 14px;">
+            <input type="text" class="input" placeholder="İstifadəçi adı və ya email">
+            <input type="password" class="input" placeholder="Şifrə">
+            <button type="submit" class="btn">Giriş Et</button>
         </form>
 
-        <div style="margin-top: 20px;">
-            <a href="{% url 'ForgotPassword' %}" style="color: #00376b; font-size: 12px; text-decoration: none;">Şifrəni unutmusan?</a>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'ForgotPassword' %}" style="font-size: 13px;">Şifrəni unutmusan?</a>
         </div>
     </div>
 
-    <div style="background: white; border: 1px solid #dbdbdb; padding: 20px;">
-        <p style="font-size: 14px;">Hesabın yoxdur? <a href="{% url 'Register' %}" style="color: #0095f6; text-decoration: none; font-weight: bold;">Qeydiyyatdan keç</a></p>
+    <div class="card" style="margin-top: 16px; text-align: center; padding: 20px;">
+        <p style="font-size: 14px; margin: 0; color: #6b7280;">
+            Hesabın yoxdur? <a href="{% url 'Register' %}" style="font-weight: 600;">Qeydiyyatdan keç</a>
+        </p>
     </div>
 </div>
 {% endblock %}
