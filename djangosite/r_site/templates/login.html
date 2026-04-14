@@ -6,12 +6,18 @@
         <h1 style="text-align: center; color: #ff6b1a; font-size: 32px; margin: 0 0 8px;">BR</h1>
         <p style="text-align: center; color: #6b7280; font-size: 14px; margin: 0 0 28px;">Hesabınıza daxil olun</p>
 
-        <form style="display: flex; flex-direction: column; gap: 14px;">
-            <input type="text" class="input" placeholder="İstifadəçi adı və ya email">
-            <input type="password" class="input" placeholder="Şifrə">
-            <button type="submit" class="btn">Giriş Et</button>
-        </form>
-
+       <form method="POST">
+    {% csrf_token %}
+    
+    {% for field in form %}
+        <div>
+            {{ field.label_tag }} <br>
+            {{ field }}
+        </div>
+    {% endfor %}
+    
+    <button type="submit">Giriş et</button>
+</form>
         <div style="text-align: center; margin-top: 20px;">
             <a href="{% url 'ForgotPassword' %}" style="font-size: 13px;">Şifrəni unutmusan?</a>
         </div>

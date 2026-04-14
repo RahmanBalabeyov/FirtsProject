@@ -8,13 +8,17 @@
             Yeni hesab yaradın və paylaşımlara başlayın.
         </p>
 
-        <form style="display: flex; flex-direction: column; gap: 14px;">
-            <input type="email" class="input" placeholder="Email">
-            <input type="text" class="input" placeholder="Tam Ad">
-            <input type="text" class="input" placeholder="İstifadəçi adı">
-            <input type="password" class="input" placeholder="Şifrə">
-            <button type="submit" class="btn">Qeydiyyatdan keç</button>
-        </form>
+    <form method="POST">
+    {% csrf_token %}
+    
+    {% for field in form %}
+        <div style="margin-bottom: 10px;">
+            {{ field.label_tag }} <br>
+            {{ field }}  </div>
+    {% endfor %}
+    
+    <button type="submit">Hesab Yarat</button>
+</form>
     </div>
 
     <div class="card" style="margin-top: 16px; text-align: center; padding: 20px;">

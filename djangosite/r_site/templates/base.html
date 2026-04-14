@@ -109,6 +109,25 @@
             font-family: inherit;
         }
         .input:focus { border-color: var(--primary); }
+
+        /* Messages */
+        .messages {
+            max-width: 480px;
+            margin: 0 auto 16px;
+            padding: 0 16px;
+            list-style: none;
+        }
+        .messages li {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            border: 1px solid transparent;
+        }
+        .messages .success { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+        .messages .error   { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+        .messages .info    { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+        .messages .warning { background: #fffbeb; color: #92400e; border-color: #fde68a; }
     </style>
 </head>
 <body>
@@ -116,14 +135,26 @@
     <nav class="navbar">
         <a href="{% url 'Home' %}" class="logo">BR</a>
         <div class="links">
-            <a href="{% url 'Home' %}">Ana səhifə</a>
-            <a href="{% url 'Profile' %}">Profil</a>
-            <a href="{% url 'Login' %}">Giriş</a>
-            <a href="{% url 'Register' %}" class="btn-primary">Qeydiyyat</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'Home' %}">Ana səhifə</a>
+                <a href="{% url 'Blog' %}">Blog</a>
+                <a href="{% url 'Profile' %}">Profil</a>
+                <a href="{% url 'Logout' %}" class="btn-primary">Çıxış</a>
+            {% else %}
+                <a href="{% url 'Login' %}">Giriş</a>
+                <a href="{% url 'Register' %}" class="btn-primary">Qeydiyyat</a>
+            {% endif %}
         </div>
     </nav>
 
     <main class="content">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 
