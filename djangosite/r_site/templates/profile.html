@@ -20,7 +20,9 @@
         display: flex; align-items: center; justify-content: center;
         color: #fff; font-size: 48px; font-weight: 700;
         flex-shrink: 0;
+        overflow: hidden;
     }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .profile-info h2 { margin: 0 0 4px; font-size: 28px; }
     .profile-info .username { color: #6b7280; font-size: 14px; margin-bottom: 16px; }
     .profile-stats { display: flex; gap: 24px; margin-bottom: 20px; }
@@ -63,35 +65,212 @@
         text-align: center;
         color: #6b7280;
     }
+
+    .pane { display: none; }
+    .pane.active { display: block; }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+    }
+    .grid-item {
+        position: relative;
+        aspect-ratio: 1;
+        background: #f3f4f6;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .grid-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .grid-item .text-only {
+        padding: 12px;
+        font-size: 13px;
+        color: #1a1a1a;
+        white-space: pre-wrap;
+        overflow: hidden;
+        height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        text-align: center;
+    }
+    .grid-item .overlay {
+        position: absolute; inset: 0;
+        background: rgba(0,0,0,0.5);
+        color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        gap: 12px;
+        opacity: 0; transition: opacity 0.15s;
+        font-size: 13px; font-weight: 600;
+    }
+    .grid-item:hover .overlay { opacity: 1; }
+
+    .comment-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    .comment-card .meta { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+
+    .modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        align-items: center; justify-content: center;
+        z-index: 1100;
+        padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+        background: #fff;
+        border-radius: 16px;
+        max-width: 420px; width: 100%;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .modal-header h3 { margin: 0; font-size: 18px; }
+    .modal-close {
+        background: none; border: none; font-size: 24px;
+        cursor: pointer; color: #6b7280; line-height: 1;
+    }
+    .modal-body { padding: 20px; }
+    .modal-footer {
+        padding: 12px 20px;
+        border-top: 1px solid #f3f4f6;
+        display: flex; justify-content: flex-end; gap: 8px;
+    }
 </style>
 
 <div class="profile">
     <div class="profile-header">
-        <div class="profile-avatar">R</div>
+        <div class="profile-avatar">
+            {% if profile_user.profile.avatar %}
+                <img src="{{ profile_user.profile.avatar.url }}" alt="">
+            {% else %}
+                {{ profile_user.profile.initials }}
+            {% endif %}
+        </div>
         <div class="profile-info" style="flex: 1;">
-            <h2>Rahman</h2>
-            <div class="username">@rahman_user</div>
+            <h2>{{ profile_user.get_full_name|default:profile_user.username }}</h2>
+            <div class="username">@{{ profile_user.username }}</div>
             <div class="profile-stats">
-                <div><strong>0</strong> Paylaşım</div>
-                <div><strong>0</strong> İzləyici</div>
-                <div><strong>0</strong> İzlənilən</div>
+                <div><strong>{{ user_posts.count }}</strong> Paylaşım</div>
+                <div><strong>{{ liked_posts.count }}</strong> Bəyəndiyim</div>
+                <div><strong>{{ user_comments.count }}</strong> Şərh</div>
             </div>
             <div class="profile-actions">
-                <button class="btn">Profili Redaktə Et</button>
-                <button class="btn btn-outline">Profil şəklini dəyiş</button>
+                <button class="btn btn-outline" id="openAvatar">Profil şəklini dəyiş</button>
             </div>
         </div>
     </div>
 
     <div class="tabs">
-        <button class="tab active">Postlarım</button>
-        <button class="tab">Saxlanılan</button>
-        <button class="tab">Bəyəndiklərim</button>
-        <button class="tab">Şərhlərim</button>
+        <button class="tab active" data-pane="posts">Postlarım</button>
+        <button class="tab" data-pane="liked">Bəyəndiklərim</button>
+        <button class="tab" data-pane="comments">Şərhlərim</button>
     </div>
 
-    <div class="empty">
-        <p style="margin: 0;">Hələlik heç bir paylaşım yoxdur.</p>
+    <div class="pane active" id="pane-posts">
+        {% if user_posts %}
+            <div class="grid">
+                {% for p in user_posts %}
+                    <div class="grid-item">
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}" alt="">
+                        {% else %}
+                            <div class="text-only">{{ p.caption|truncatechars:80 }}</div>
+                        {% endif %}
+                        <div class="overlay">
+                            <span>♥ {{ p.like_count }}</span>
+                            <span>💬 {{ p.comment_count }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty"><p style="margin: 0;">Hələlik heç bir paylaşımın yoxdur.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="pane" id="pane-liked">
+        {% if liked_posts %}
+            <div class="grid">
+                {% for p in liked_posts %}
+                    <div class="grid-item">
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}" alt="">
+                        {% else %}
+                            <div class="text-only">{{ p.caption|truncatechars:80 }}</div>
+                        {% endif %}
+                        <div class="overlay">
+                            <span>@{{ p.author.username }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty"><p style="margin: 0;">Hələ heç bir paylaşımı bəyənməmisən.</p></div>
+        {% endif %}
+    </div>
+
+    <div class="pane" id="pane-comments">
+        {% if user_comments %}
+            {% for c in user_comments %}
+                <div class="comment-card">
+                    <div class="meta">@{{ c.post.author.username }}-in paylaşımına · {{ c.created_at|timesince }} öncə</div>
+                    <div>{{ c.text }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty"><p style="margin: 0;">Hələ heç bir şərh yazmamısan.</p></div>
+        {% endif %}
     </div>
 </div>
+
+<div class="modal-overlay" id="avatarModal">
+    <div class="modal">
+        <form method="post" action="{% url 'UpdateAvatar' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h3>Profil şəklini dəyiş</h3>
+                <button type="button" class="modal-close" id="closeAvatar">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="file" name="avatar" accept="image/*" required style="width: 100%;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelAvatar">İmtina</button>
+                <button type="submit" class="btn">Yüklə</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function() {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('pane-' + tab.dataset.pane).classList.add('active');
+        });
+    });
+
+    const modal = document.getElementById('avatarModal');
+    const open = () => modal.classList.add('open');
+    const close = () => modal.classList.remove('open');
+    document.getElementById('openAvatar').addEventListener('click', open);
+    document.getElementById('closeAvatar').addEventListener('click', close);
+    document.getElementById('cancelAvatar').addEventListener('click', close);
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+})();
+</script>
 {% endblock %}

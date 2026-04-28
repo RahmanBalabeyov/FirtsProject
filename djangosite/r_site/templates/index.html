@@ -21,10 +21,13 @@
         background: linear-gradient(135deg, #ff6b1a, #ffa366);
         display: flex; align-items: center; justify-content: center;
         color: #fff; font-weight: 700; font-size: 14px;
+        overflow: hidden;
+        flex-shrink: 0;
     }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .post-user { font-weight: 600; font-size: 14px; color: #1a1a1a; }
     .post-time { font-size: 12px; color: #6b7280; }
-    .post-body { padding: 0 20px 16px; font-size: 15px; line-height: 1.6; color: #1a1a1a; }
+    .post-body { padding: 0 20px 16px; font-size: 15px; line-height: 1.6; color: #1a1a1a; white-space: pre-wrap; }
     .post-image { width: 100%; display: block; }
     .post-actions {
         display: flex;
@@ -44,8 +47,20 @@
         display: flex; align-items: center; gap: 6px;
     }
     .action:hover { background: #fff4ec; color: #ff6b1a; }
+    .action.liked { color: #ff6b1a; }
     .post-stats { padding: 0 20px 12px; font-size: 13px; color: #6b7280; }
     .post-stats strong { color: #1a1a1a; }
+    .comments-list {
+        padding: 0 20px 12px;
+        display: flex; flex-direction: column; gap: 8px;
+    }
+    .comment-row {
+        display: flex; gap: 8px; align-items: flex-start;
+        font-size: 13px;
+    }
+    .comment-row .avatar { width: 28px; height: 28px; font-size: 11px; }
+    .comment-row .c-user { font-weight: 600; color: #1a1a1a; margin-right: 4px; }
+    .comment-row .c-text { color: #374151; }
     .comment-box {
         display: flex;
         padding: 12px 20px;
@@ -70,6 +85,7 @@
     .feed-header {
         max-width: 600px;
         margin: 0 auto 24px;
+        display: flex; align-items: center; justify-content: space-between;
     }
     .feed-header h1 {
         font-size: 24px;
@@ -77,59 +93,247 @@
         color: #1a1a1a;
     }
     .feed-header p { color: #6b7280; margin: 0; font-size: 14px; }
+
+    .fab {
+        position: fixed;
+        right: 32px; bottom: 32px;
+        width: 60px; height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff6b1a, #ffa366);
+        color: #fff;
+        font-size: 32px;
+        font-weight: 300;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(255,107,26,0.4);
+        z-index: 999;
+        display: flex; align-items: center; justify-content: center;
+        line-height: 1;
+        transition: transform 0.15s;
+    }
+    .fab:hover { transform: scale(1.05); }
+
+    .modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        align-items: center; justify-content: center;
+        z-index: 1100;
+        padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+        background: #fff;
+        border-radius: 16px;
+        max-width: 480px; width: 100%;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .modal-header h3 { margin: 0; font-size: 18px; }
+    .modal-close {
+        background: none; border: none; font-size: 24px;
+        cursor: pointer; color: #6b7280; line-height: 1;
+    }
+    .modal-body { padding: 20px; }
+    .modal-body textarea {
+        width: 100%; min-height: 120px;
+        border: 1px solid #e5e7eb; border-radius: 8px;
+        padding: 12px; font-size: 14px; font-family: inherit;
+        resize: vertical; outline: none;
+    }
+    .modal-body textarea:focus { border-color: #ff6b1a; }
+    .file-row { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+    .file-row label {
+        background: #fff4ec; color: #ff6b1a;
+        padding: 8px 14px; border-radius: 8px;
+        font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .file-row .file-name { font-size: 13px; color: #6b7280; }
+    .modal-footer {
+        padding: 12px 20px;
+        border-top: 1px solid #f3f4f6;
+        display: flex; justify-content: flex-end; gap: 8px;
+    }
+
+    .empty-feed {
+        max-width: 600px; margin: 0 auto;
+        background: #fff;
+        border: 1px dashed #e5e7eb;
+        border-radius: 12px;
+        padding: 60px 20px;
+        text-align: center;
+        color: #6b7280;
+    }
 </style>
 
 <div class="feed-header">
-    <h1>Ana səhifə</h1>
-    <p>Ən son paylaşımlar</p>
+    <div>
+        <h1>Ana səhifə</h1>
+        <p>Ən son paylaşımlar</p>
+    </div>
 </div>
 
 <div class="feed">
-
-    <article class="post">
-        <div class="post-header">
-            <div class="avatar">RD</div>
-            <div>
-                <div class="post-user">rahman_dev</div>
-                <div class="post-time">2 saat öncə</div>
+    {% for post in posts %}
+        <article class="post" data-post-id="{{ post.id }}">
+            <div class="post-header">
+                <div class="avatar">
+                    {% if post.author.profile.avatar %}
+                        <img src="{{ post.author.profile.avatar.url }}" alt="">
+                    {% else %}
+                        {{ post.author.profile.initials }}
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="post-user">{{ post.author.username }}</div>
+                    <div class="post-time">{{ post.created_at|timesince }} öncə</div>
+                </div>
             </div>
-        </div>
-        <div class="post-body">
-            Bu gün ilk Django layihəmin ana səhifəsini hazırlayıram. 🚀 #django #python
-        </div>
-        <div class="post-stats"><strong>42</strong> bəyənmə · <strong>5</strong> şərh</div>
-        <div class="post-actions">
-            <button class="action">♥ Bəyən</button>
-            <button class="action">💬 Şərh</button>
-            <button class="action">↗ Paylaş</button>
-        </div>
-        <div class="comment-box">
-            <input type="text" placeholder="Şərh yaz...">
-            <button>Göndər</button>
-        </div>
-    </article>
-
-    <article class="post">
-        <div class="post-header">
-            <div class="avatar">AC</div>
-            <div>
-                <div class="post-user">ali_coder</div>
-                <div class="post-time">5 saat öncə</div>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="" class="post-image">
+            {% endif %}
+            {% if post.caption %}
+                <div class="post-body">{{ post.caption }}</div>
+            {% endif %}
+            <div class="post-stats">
+                <strong class="like-count">{{ post.like_count }}</strong> bəyənmə ·
+                <strong class="comment-count">{{ post.comment_count }}</strong> şərh
             </div>
+            <div class="post-actions">
+                <button class="action like-btn {% if post.id in liked_post_ids %}liked{% endif %}"
+                        data-post-id="{{ post.id }}">
+                    ♥ <span class="like-label">{% if post.id in liked_post_ids %}Bəyənildi{% else %}Bəyən{% endif %}</span>
+                </button>
+                <button class="action toggle-comments">💬 Şərh</button>
+            </div>
+            <div class="comments-list">
+                {% for c in post.comments.all %}
+                    <div class="comment-row">
+                        <div class="avatar">
+                            {% if c.user.profile.avatar %}
+                                <img src="{{ c.user.profile.avatar.url }}" alt="">
+                            {% else %}
+                                {{ c.user.profile.initials }}
+                            {% endif %}
+                        </div>
+                        <div><span class="c-user">{{ c.user.username }}</span><span class="c-text">{{ c.text }}</span></div>
+                    </div>
+                {% endfor %}
+            </div>
+            <form class="comment-box comment-form" data-post-id="{{ post.id }}">
+                {% csrf_token %}
+                <input type="text" name="text" placeholder="Şərh yaz..." autocomplete="off">
+                <button type="submit">Göndər</button>
+            </form>
+        </article>
+    {% empty %}
+        <div class="empty-feed">
+            <p style="margin: 0 0 8px; font-size: 16px;">Hələlik heç bir paylaşım yoxdur.</p>
+            <p style="margin: 0; font-size: 13px;">Sağ aşağıdakı + düyməsinə basıb ilk paylaşımı sən et!</p>
         </div>
-        <img src="https://via.placeholder.com/600x400/ff6b1a/ffffff?text=BR" alt="Post" class="post-image">
-        <div class="post-body">Manzara çox gözəldir.</div>
-        <div class="post-stats"><strong>105</strong> bəyənmə · <strong>12</strong> şərh</div>
-        <div class="post-actions">
-            <button class="action">♥ Bəyən</button>
-            <button class="action">💬 Şərh</button>
-            <button class="action">↗ Paylaş</button>
-        </div>
-        <div class="comment-box">
-            <input type="text" placeholder="Şərh yaz...">
-            <button>Göndər</button>
-        </div>
-    </article>
-
+    {% endfor %}
 </div>
+
+<button class="fab" id="openCreate" title="Yeni paylaşım">+</button>
+
+<div class="modal-overlay" id="createModal">
+    <div class="modal">
+        <form method="post" action="{% url 'CreatePost' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h3>Yeni paylaşım</h3>
+                <button type="button" class="modal-close" id="closeCreate">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea name="caption" placeholder="Nə düşünürsən?"></textarea>
+                <div class="file-row">
+                    <label for="postImage">📷 Şəkil seç</label>
+                    <input type="file" name="image" id="postImage" accept="image/*" style="display:none;">
+                    <span class="file-name" id="fileName">Heç bir fayl seçilmədi</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelCreate">İmtina</button>
+                <button type="submit" class="btn">Paylaş</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function() {
+    const modal = document.getElementById('createModal');
+    const open = () => modal.classList.add('open');
+    const close = () => modal.classList.remove('open');
+    document.getElementById('openCreate').addEventListener('click', open);
+    document.getElementById('closeCreate').addEventListener('click', close);
+    document.getElementById('cancelCreate').addEventListener('click', close);
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+
+    document.getElementById('postImage').addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        document.getElementById('fileName').textContent = f ? f.name : 'Heç bir fayl seçilmədi';
+    });
+
+    const getCookie = (name) => {
+        const v = document.cookie.split('; ').find(r => r.startsWith(name + '='));
+        return v ? decodeURIComponent(v.split('=')[1]) : '';
+    };
+    const csrftoken = getCookie('csrftoken');
+
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const postId = btn.dataset.postId;
+            const res = await fetch(`/post/${postId}/like/`, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            const article = btn.closest('.post');
+            article.querySelector('.like-count').textContent = data.count;
+            btn.classList.toggle('liked', data.liked);
+            btn.querySelector('.like-label').textContent = data.liked ? 'Bəyənildi' : 'Bəyən';
+        });
+    });
+
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const postId = form.dataset.postId;
+            const input = form.querySelector('input[name="text"]');
+            const text = input.value.trim();
+            if (!text) return;
+            const fd = new FormData();
+            fd.append('text', text);
+            const res = await fetch(`/post/${postId}/comment/`, {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                body: fd,
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            if (!data.ok) return;
+            const article = form.closest('.post');
+            const list = article.querySelector('.comments-list');
+            const row = document.createElement('div');
+            row.className = 'comment-row';
+            const avatarHtml = data.comment.avatar_url
+                ? `<img src="${data.comment.avatar_url}" alt="">`
+                : data.comment.initials;
+            row.innerHTML = `<div class="avatar">${avatarHtml}</div>
+                <div><span class="c-user">${data.comment.username}</span><span class="c-text"></span></div>`;
+            row.querySelector('.c-text').textContent = data.comment.text;
+            list.appendChild(row);
+            article.querySelector('.comment-count').textContent = data.count;
+            input.value = '';
+        });
+    });
+})();
+</script>
 {% endblock %}
